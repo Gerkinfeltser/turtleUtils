@@ -10,6 +10,7 @@
              v0.62: - Added visual fuel bar
   Todo:     - Dynamic Keybinding display
             - Color GUI
+            - gps
 ]]
 version = "v0.72"
 
