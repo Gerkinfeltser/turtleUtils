@@ -1,38 +1,39 @@
-running = true
-exitKey = 57 -- 57:spacebar
-sleepLength = 300
-totalMellon = 0
+sleepLength = 30
+digBlock = {name = "minecraft:melon", metadata = 0}
+goalItem = "minecraft:melon"
+goalSeed = nil
 
-local function mellon()
-	turtle.select(1)
-	if turtle.digDown() then
-		local mellonCount = turtle.getItemCount(1)
-		totalMellon = mellonCount + totalMellon
-		term.setCursorPos(1,2)
-		term.clearLine()
-		print(totalMellon.."harvested")
-		turtle.dropUp()
+local function digIt()
+	local success, data = turtle.inspectDown()
+	if data == digBlock then
+		turtle.select(1)
+		turtle.digDown()
+		for i=1, 16 do
+			local success, data = turtle.getItemDetail(i)
+			if data.name == goalItem then
+				turtle.dropUp()
+			end
+		end
+		if goalSeed then
+			for i=1, 16 do
+				local success, data = turtle.getItemDetail(i)
+				if data.name == goalSeed then
+					turtle.placeDown()
+					return
+				end
+			end
+		end
 	end
 	sleep(sleepLength)
-end
-
-local function keyMon()
-  local sEvent, key = os.pullEvent()
-  if sEvent == "key" then
-    if key == exitKey then
-		term.clear()
-		term.setCursorPos(1,3)
-		term.write("Later, mon")
-		running = false
-		term.setCursorPos(1,4)
-      return
-    end
-  end
 end
 
 term.clear()
 term.setCursorPos(1,1)
 print("Mellon, mon!")
-while running do
-	parallel.waitForAny(keyMon(), mellon())
+print("Waiting for ".. digBlock.name.. " stage ".. digBlock.metadata)
+if goalSeed then print("Replanting ".. goalSeed) end
+print("ctrl+R to reboot, bah-ee!")
+
+while true do
+	digIt()
 end
