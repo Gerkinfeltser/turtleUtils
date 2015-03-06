@@ -1,0 +1,425 @@
+--[[
+  File:      tControl
+  Purpose:   A utiltiy for controlling turtles via wasd & some other keys/functions
+  Author(s): iTreefish
+  License:   MIT License - http://opensource.org/licenses/MIT
+  Changelog: v0.72: - Added support for fuelless turtles
+             v0.7:  - Cleaned up code a bit, removed unnecessary/poor humor
+             v0.64: - Added ACT hotkey (see http://turtlescripts.com/project/gjdh20-Act for script)
+             v0.63: - Added inventory info check
+             v0.62: - Added visual fuel bar
+  Todo:     - Dynamic Keybinding display
+            - Color GUI
+]]
+version = "v0.72"
+
+--=== Key Config ===--
+-- (see http://computercraft.info/wiki/Key_(event) for more keycodes)
+exitKey =     57      -- 57:space
+helpKey =     59      -- 59:F1
+-- movement keys
+forward =     17      -- 17:w
+back =        31      -- 31:s
+turnLeft =    30      -- 30:a
+turnRight =   32      -- 32:d
+strafeLeft =  44      -- 44:z
+strafeRight = 46      -- 46:c
+ascend =      18      -- 18:e
+descend =     16      -- 16:q
+turn180 =     45      -- 45:x
+-- action keys
+digUp =       19      -- 19:r
+digForward =  33      -- 33:f
+digDown =     47      -- 47:v
+placeUp =     20      -- 20:t
+placeForward =34      -- 34:g
+placeDown =   48      -- 48:b
+refuel =      41      -- 41:`
+refuelLava =  6       -- 6:5 (empty bucket needs to be in selected slot)
+doThis =      25      -- 25:p
+-- inventory keys
+invUp =       27      -- 27:rightBracket
+invDown =     26      -- 26:leftBracket
+inv1 =        2       -- 2:1
+inv2 =        3       -- 3:2
+inv3 =        4       -- 4:3
+inv4 =        5       -- 5:4
+whatsThis =   23      -- 23:i
+
+-- Time display variables
+displayDay = true
+militaryTime = true
+compactTime = false
+
+--=== script variables ===--
+running = true
+x, y = term.getSize()
+currentSlot = turtle.getSelectedSlot()
+fuelLimit = turtle.getFuelLimit()
+
+--===== functions =====--
+local function seperator()
+  local sep = string.rep('=', x);
+  term.write(sep)
+end
+
+local function cwrite(text, y)
+  local cx = math.ceil((x/2)-(string.len(text)/2))
+  term.setCursorPos(cx, y)
+  write(text)
+end
+
+local function dayTimeUpdate()
+  local ret
+  local time = os.time()
+  local formattedTime = textutils.formatTime(time,militaryTime)
+  if compactTime then formattedTime = string.gsub(formattedTime, " ", "") end
+  if displayDay then
+    local day = os.day()
+    ret = ("Day" ..day .."," ..formattedTime .."> ")
+  else
+    ret = (formattedTime .."> ")
+  end
+  return ret
+end
+
+local function fuelDrawUpdate()
+  local fuelbar
+  if tonumber(fuelLimit) then
+    local fuelLevel = turtle.getFuelLevel()
+
+    local fuelBarHeader = "Fuel: "..fuelLevel.."/"..fuelLimit.." ["
+    local fuelBarFooter = "]"
+    local barLength = x - (string.len(fuelBarHeader) + string.len(fuelBarFooter))
+
+    local fuelPercent = (fuelLevel/fuelLimit) * barLength
+    local containedFuelBar = string.rep("=",fuelPercent)
+    local emptyFuelBar = string.rep(".",barLength-fuelPercent)
+
+    fuelBar = fuelBarHeader .. containedFuelBar .. emptyFuelBar .. fuelBarFooter
+  else
+    fuelBar = "Fuel Unlimited"
+  end
+  term.setCursorPos(1,2)
+  term.clearLine()
+  term.write(fuelBar)
+end
+
+local function declareOutcome(message, bool, noDate)
+  term.setCursorPos(1,y)
+  term.clearLine()
+  if bool ~= nil and tonumber(fuelLimit) then
+   fuelDrawUpdate()
+  end
+  if noDate == nil then
+    term.write(dayTimeUpdate().. message)
+  else
+    term.write(message)
+  end
+end
+
+function rednetOn()
+  local Sides = {"back","right","left","front","top","bottom"}
+  local side = nil
+  local rednetComment = "-Rednet"
+  for i=1,#Sides do
+    if peripheral.isPresent(Sides[i]) then
+      if peripheral.getType(Sides[i]) == "modem" then
+        side = Sides[i]
+      end
+    end
+  end
+  if side ~= nil then
+    rednet.open(side)
+  end
+  if rednet.isOpen(side) then
+    rednetComment = "+Rednet"
+  end
+  local rnCommentLength = string.len(rednetComment)
+  term.setCursorPos(x-rnCommentLength,1)
+  term.write(rednetComment)
+end
+
+local function headerGui()
+  term.clear()
+  term.setCursorPos(1,1)
+  term.write("Name(ID): " .. os.getComputerLabel() .. "(" .. os.getComputerID() ..")")
+  fuelDrawUpdate()
+  term.setCursorPos(1,3)
+  seperator()
+end
+
+local function keyGUI()
+  cwrite("--- KEYMAP ---",4)
+  term.setCursorPos(1,5)
+  print("Move H.  Vert.  Dig - Place   InvSlot")
+  print("     W     E    R     T        1-4")
+  print("  Z-A+D-C  |    F     G        Next:]")
+  print("     S     Q    V     B        Prev:[")
+  if tonumber(fuelLimit) then
+    print("180: X     Refuel:`   LavaRefuel:5")
+  else
+    print("180: X")
+  end
+  print("p:ACT   i:SlotItemInfo   F1:Help")
+  term.setBackgroundColor(colors.white)
+  term.setTextColor(colors.black)
+  cwrite(" Spacebar to exit ",y-2)
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.white)
+  term.setCursorPos(1,y-1)
+  seperator()
+end
+
+local function helpScreen()
+  term.clear()
+  cwrite("turtleControl "..version,1)
+  cwrite("running on "..os.version(),2)
+  term.setCursorPos(1,3)
+  seperator()
+  print("Keys can be customized via keycodes.")
+  print("Details here: http://computercraft.info/wiki/Key_(event)")
+  print("")
+  print("I can be refueled with lava.")
+  print("Just place an empty bucket is in my currently selected slot, navigate me into place above a lava source block, and and hit [5].")
+  print("")
+  print("Slot item info only available on CraftOS 1.64 or greater.")
+  print("")
+  print("ACT by McLeopold is a easy way to send commands.")
+  print("Details here: http://turtlescripts.com/project/gjdh20-Act")
+  local sEvent, key = os.pullEvent()
+  if sEvent == "key" then
+    return
+  end
+end
+
+local function mainGUI()
+  headerGui()
+  keyGUI()
+end
+
+local function quitTC()
+  term.clear()
+  term.setCursorPos(1,1)
+  term.write("Later")
+  running = false
+  term.setCursorPos(1,2)
+end
+
+local function updateEvent()
+  while true do
+    local sEvent, key = os.pullEvent()
+    if sEvent == "key" then
+      if key == exitKey then
+        quitTC()
+        return
+      end
+      if key == helpKey then
+        helpScreen()
+        mainGUI()
+      end
+      -- Inventory scroll
+      if key == invUp then
+        newSlot = (currentSlot+1) % 16
+        if newSlot == 0 then
+        newSlot = 16
+        end
+        turtle.select(newSlot)
+        currentSlot = newSlot
+        declareOutcome(currentSlot .. " slot selected")
+      end
+      if key == invDown then
+        newSlot = (currentSlot-1) % 16
+        if newSlot == 0 then
+        newSlot = 16
+        end
+        turtle.select(newSlot)
+        currentSlot = newSlot
+        declareOutcome(currentSlot .. " slot selected")
+      end
+      if key == forward then
+        if turtle.forward() then
+          declareOutcome("Moving forward",true)
+        else
+          declareOutcome("Can't go forward")
+        end
+      end
+      if key == back then
+        if turtle.back() then
+          declareOutcome("Backing up",true)
+        else
+          declareOutcome("Can't go back")
+        end
+      end
+      if key == turnRight then
+        turtle.turnRight()
+        declareOutcome("Turning right")
+      end
+      if key == turnLeft then
+        turtle.turnLeft()
+        declareOutcome("Turning left")
+      end
+      if key == turn180 then
+        turtle.turnRight()
+        turtle.turnRight()
+        declareOutcome("Turned around")
+      end
+      if key == strafeRight then
+        turtle.turnRight()
+        if turtle.forward() then
+          turtle.turnLeft()
+          declareOutcome("Strafing right",true)
+        else
+          declareOutcome("Can't strafe right")
+          turtle.turnLeft()
+        end
+      end
+      if key == strafeLeft then
+        turtle.turnLeft()
+        if turtle.forward() then
+          turtle.turnRight()
+          declareOutcome("Strafing left",true)
+        else
+          declareOutcome("Can't strafe left")
+          turtle.turnRight()
+        end
+      end
+      if key == descend then
+        if turtle.down() then
+          declareOutcome("Going down",true)
+        else
+          declareOutcome("Can't go down")
+        end
+      end
+      if key == ascend then
+        if turtle.up() then
+          declareOutcome("Going up",true)
+        else
+          declareOutcome("Can't go up")
+        end
+      end
+
+      -- digging
+      if key == digUp then
+        turtle.attackUp()
+        if turtle.digUp() then
+          declareOutcome("Dug up")
+        else
+          declareOutcome("Nothing up to dig")
+        end
+      end
+      if key == digForward then
+        turtle.attack()
+        if turtle.dig() then
+          declareOutcome("Dug forward")
+        else
+          declareOutcome("Nothing to dig")
+        end
+      end
+      if key == digDown then
+        turtle.attackDown()
+        if turtle.digDown() then
+          declareOutcome("Dug down")
+        else
+          declareOutcome("Nothing down to dig")
+        end
+      end
+      
+      -- placing
+      if key == placeUp then
+        if turtle.placeUp() then
+          declareOutcome("Placed up")
+        else
+          declareOutcome("Couldn't place up")
+        end
+      end
+      if key == placeForward then
+        if turtle.place() then
+          declareOutcome("Placed forward")
+        else
+          declareOutcome("Couldn't place")
+        end
+      end
+      if key == placeDown then
+        if turtle.placeDown() then
+          declareOutcome("Placed down")
+        else
+          declareOutcome("Couldn't place down")
+        end
+      end
+
+      -- Inventory Slots 1-4
+      if key == "1" then
+        turtle.select(1)
+        declareOutcome("Slot 1 selected")
+      end
+      if key == "2" then
+         turtle.select(2)
+       declareOutcome("Slot 2 selected")
+      end
+      if key == "3" then
+        turtle.select(3)
+        declareOutcome("Slot 3 selected")
+      end
+      if key == "4" then
+        turtle.select(4)
+        declareOutcome("Slot 4 selected")
+      end
+      if key == whatsThis then
+        local version = os.version()
+        versionNum = string.match(version, '%d.%d*')
+        if versionNum >= "1.6" then
+          local data = turtle.getItemDetail()
+          if data then
+            declareOutcome(data.name..":"..data.damage, true, true)
+          else
+            declareOutcome("Nothing in this slot")
+          end
+        else
+          declareOutcome("Cmd not in "..os.version())
+        end
+      end
+      
+      -- refueling
+      if key == refuel and tonumber(fuelLimit) then
+        if turtle.refuel() == false then
+          -- Selected isn't fuel, put it back down
+          declareOutcome("Couldn't refuel with this")
+        else
+          declareOutcome("Ah, much better!",true)
+        end
+      end
+      -- Grab fuel (generally lava) from below with bucket and refuel
+      if key == refuelLava and tonumber(fuelLimit) then
+        turtle.placeDown()
+        if turtle.refuel() == false then
+          -- Selected isn't fuel, put it back down
+          declareOutcome("Need lava below & bucket in slot " ..currentSlot)
+        else
+          declareOutcome("Ah, much better!",true)
+        end
+      end
+
+      if key == doThis then
+        if os.loadAPI("act") then
+          term.setCursorPos(1, y)
+          term.clearLine()
+          write("Command? ")
+          local data = read()
+          act.act(data)
+          mainGUI()
+          declareOutcome("Attempted "..data,true)
+        else
+          mainGUI()
+          declareOutcome("ACT script not found")
+        end
+      end
+    end -- key assigning
+  end
+end
+
+while running do
+  mainGUI()
+  rednetOn()
+  updateEvent()
+end
