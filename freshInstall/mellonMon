@@ -1,0 +1,38 @@
+running = true
+exitKey = 57 -- 57:spacebar
+sleepLength = 300
+totalMellon = 0
+
+local function mellon()
+	turtle.select(1)
+	if turtle.digDown() then
+		local mellonCount = turtle.getItemCount(1)
+		totalMellon = mellonCount + totalMellon
+		term.setCursorPos(1,2)
+		term.clearLine()
+		print(totalMellon.."harvested")
+		turtle.dropUp()
+	end
+	sleep(sleepLength)
+end
+
+local function keyMon()
+  local sEvent, key = os.pullEvent()
+  if sEvent == "key" then
+    if key == exitKey then
+		term.clear()
+		term.setCursorPos(1,3)
+		term.write("Later, mon")
+		running = false
+		term.setCursorPos(1,4)
+      return
+    end
+  end
+end
+
+term.clear()
+term.setCursorPos(1,1)
+print("Mellon, mon!")
+while running do
+	parallel.waitForAny(keyMon(), mellon())
+end
