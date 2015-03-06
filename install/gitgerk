@@ -15,7 +15,7 @@ local hide_progress = true    -- If true, will not list out files as they are do
 args[1] = "Gerkinfeltser"     -- Github username
 args[2] = "turtleUtils"       -- Github repo name
 args[3] = nil                 -- Branch - defaults to "master"
-args[4] = "freshInstall" 			-- Path - defaults to root ("/")
+args[4] = "install" 			-- Path - defaults to root ("/")
 local pre_dl = "print('Starting download...')"  -- Command(s) to run before download starts.
 local post_dl = "print('Download complete!')"   -- Command(s) to run after download completes.
  
