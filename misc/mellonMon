@@ -33,8 +33,8 @@ end
 term.clear()
 term.setCursorPos(1,1)
 print("Mellon, mon!")
-print("Waiting for ".. digBlock.name.. " stage ".. digBlock.metadata)
-if goalSeed then print("Replanting ".. goalSeed) end
+print("Waiting for ".. digBlock.name.. ":".. digBlock.metadata)
+if goalSeed ~= nil then print("Replanting ".. goalSeed) end
 print("ctrl+R to reboot, bah-ee!")
 
 while true do
