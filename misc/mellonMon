@@ -1,17 +1,14 @@
 sleepLength = 30
-digBlock = {name = "minecraft:melon_block", metadata = 0}
--- {name = "ExtraUtilities:plant/ender_lilly", metadata = 1}
-goalItem = "minecraft:melon" 
--- "minecraft:ender_pearl"
-goalSeed = nil
--- "ExtraUtilities:plant/ender_lilly"
+digBlock = {name = "minecraft:melon_block", metadata = 0} -- {name = "ExtraUtilities:plant/ender_lilly", metadata = 1}
+goalItem = "minecraft:melon" -- "minecraft:ender_pearl"
+goalSeed = nil -- "ExtraUtilities:plant/ender_lilly"
 
 local function digIt()
 	local success, data = turtle.inspectDown()
 	if success and data.name == digBlock.name and data.metadata == digBlock.metadata then
 		turtle.select(1)
 		turtle.digDown()
-		sleep(1)
+		sleep(0.3)
 		for i=1, 16 do
 			local data = turtle.getItemDetail(i)
 			if data ~= nil and data.name == goalItem then
@@ -19,18 +16,14 @@ local function digIt()
 				turtle.dropUp()
 			end
 		end
-		sleep(1)
+		sleep(0.3)
 		if goalSeed ~= nil then
 			for i=1, 16 do
-				turtle.select(i)
-				sleep(0.3)
-				local data = turtle.getItemDetail()
+				local data = turtle.getItemDetail(i)
 				if data ~= nil and data.name == goalSeed then
 					turtle.select(i)
 					turtle.placeDown()
 					return
-				else
-					sleep(0.3)
 				end
 			end
 		end

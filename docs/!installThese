@@ -1,17 +1,19 @@
+INCLUDED
 -- gitgerk (install first)
 pastebin get ZeCdksKk gg
 (pastebin get GALNjiz2 quarry included)
-
+-- if tonumber(turtle.getFuelLimit) then
+pastebin get nFSUKiYE lava
 -- exShell
 pastebin get wJVmXZv7 xSh
 -- luaide
 pastebin get vyAZc6tJ li
 pastebin get zkb4FY4L shapebuilder
-
 pastebin get w1RtfqFd market
+
+Get these
 market get gjdh3r act y
 market get gjdh3s do y
 market get gjdi4a platform y
+market get gjdhj7 obsidian y
 
--- if tonumber(turtle.getFuelLimit) then
-pastebin get nFSUKiYE lava
