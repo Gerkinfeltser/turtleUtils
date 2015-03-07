@@ -12,16 +12,17 @@ local function digIt()
 		turtle.select(1)
 		turtle.digDown()
 		for i=1, 16 do
-			local success, data = turtle.getItemDetail(i)
-			if success and data.name == goalItem then
+			local data = turtle.getItemDetail(i)
+			if data and data.name == goalItem then
 				turtle.select(i)
 				turtle.dropUp()
 			end
 		end
 		if goalSeed then
 			for i=1, 16 do
-				local success, data = turtle.getItemDetail(i)
-				if data.name == goalSeed then
+				local data = turtle.getItemDetail(i)
+				if data and data.name == goalItem then
+					turtle.select(i)
 					turtle.placeDown()
 					return
 				end
