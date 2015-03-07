@@ -1,7 +1,10 @@
 sleepLength = 30
-digBlock = {name = "minecraft:melon", metadata = 0}
-goalItem = "minecraft:melon"
+digBlock = {name = "minecraft:melon_block", metadata = 0}
+-- {name = "ExtraUtilities:plant/ender_lilly", metadata = 1}
+goalItem = "minecraft:melon" 
+-- "minecraft:ender_pearl"
 goalSeed = nil
+-- "ExtraUtilities:plant/ender_lilly"
 
 local function digIt()
 	local success, data = turtle.inspectDown()
