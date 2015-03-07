@@ -13,7 +13,7 @@ local function digIt()
 		turtle.digDown()
 		for i=1, 16 do
 			local data = turtle.getItemDetail(i)
-			if data ~= mil and data.name == goalItem then
+			if data ~= nil and data.name == goalItem then
 				turtle.select(i)
 				turtle.dropUp()
 			end
