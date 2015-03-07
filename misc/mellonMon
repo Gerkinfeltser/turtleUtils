@@ -8,7 +8,7 @@ goalSeed = nil
 
 local function digIt()
 	local success, data = turtle.inspectDown()
-	if data.name == digBlock.name and data.metadata == digBlock.metadata then
+	if success and data.name == digBlock.name and data.metadata == digBlock.metadata then
 		turtle.select(1)
 		turtle.digDown()
 		for i=1, 16 do
