@@ -1,6 +1,7 @@
--- gitget
-pastebin get 6aMMzdwd gitget
-gitget "Gerkinfeltser" "turtleUtils" nil "freshInstall"
+-- gitgerk (install first)
+pastebing get ZeCdksKk gitgerk
+(pastebin get GALNjiz2 quarry included)
+
 -- exShell
 pastebin get wJVmXZv7 xSh
 -- luaide
@@ -10,8 +11,6 @@ pastebin get zkb4FY4L shapebuilder
 pastebin get w1RtfqFd market
 market get gjdh3r act y
 market get gjdh3s do y
-market get gjdgxt bore y
-pastebing get GALNjiz2 quarry
 
 -- if tonumber(turtle.getFuelLimit) then
 pastebin get nFSUKiYE lava

@@ -1,0 +1,369 @@
+--[[
+  File:      BORE
+  Version:   2.0
+  Purpose:   A utiltiy for hollowing, widening and excavation of tunnels, rooms, ceilings, walls and floors.
+  Author(s): da404lewzer [http://turtlescripts.com/profile/da404lewzer]
+             zachdyer [http://turtlescripts.com/profile/zachdyer]
+  Project:   http://turtlescripts.com/project/gjdgxt
+  License:   Creative Commons Attribution-ShareAlike 3.0 Unported License.
+             http://creativecommons.org/licenses/by-sa/3.0/
+]]
+
+
+local tArgs, lookingRight, lookingUp, autoRefuel = {...}, true, false, true
+local noRefuelFlagSet, lookingLeftFlagSet, lookingDownFlagSet = false, false, false
+local length = tonumber(tArgs[1]) or 0
+local width  = tonumber(tArgs[2]) or 0
+local height = tonumber(tArgs[3]) or 0
+local isRunning = true
+local travelL, travelW, travelH, travelR = 0, 0, 0, 0
+local w,h = term.getSize()
+local blocksBroken = 0
+local fuelLevel, fuelLimit
+if tonumber(turtle.getFuelLevel()) ~= nil then
+    fuelLevel = turtle.getFuelLevel()
+    fuelLimit = turtle.getFuelLimit()
+else
+    fuelLevel = 99999999
+    fuelLevel = 99999999
+end
+
+
+
+if tArgs[1] == "update" then
+    local sCode, sFile, sPin = "gjdgxt", "bore", ""
+    local sPath = shell.resolve( sFile )
+    write( "Connecting to TurtleScripts.com... " )
+    local response = http.post("http://api.turtlescripts.com/getFileRaw/"..textutils.urlEncode( sCode ),"pin="..sPin)
+    if response then
+        local sResponse = response.readAll()
+        response.close()
+        local file = fs.open( sPath, "w" )
+        file.write( sResponse )
+        file.close()
+        print( " " )
+        print( "Remote: #"..sCode )
+        print( "Local: "..sFile )
+        print( "[===========================] 100%" )
+        print(string.len(sResponse).." bytes")
+        print( " " )
+        print( "Update Complete." )
+        print( " " )
+    else
+        print( "Failed to update." )
+        print( " " )
+    end
+    isRunning = false
+end
+
+if isRunning then
+    if #tArgs > 3 then
+        for i=4, #tArgs do
+            local flag = tArgs[i]
+            if flag == "--no_refuel" then
+                autoRefuel = false
+                noRefuelFlagSet = true
+            elseif flag == "--left" then
+                lookingRight = false
+                lookingLeftFlagSet = true
+            elseif flag == "--down" then
+                lookingUp = true
+                lookingDownFlagSet = true
+            end
+        end
+    end
+end
+
+function printUsage()
+    print(" Usage: ")
+    print("   bore <L> <W> <H>")
+    print("   bore <L> <W> <H> [flags]")
+    print("   bore update")
+    print(" Flags:")
+    print("   --no_refuel")
+    print("   --left (right-to-left)")
+    print("   --down (excavate mode)")
+    print(" ")
+end
+local function tryRefuel()
+    for n=1,16 do
+        if turtle.getItemCount(n) > 0 then
+            turtle.select(n)
+            if turtle.refuel(1) then
+                return true
+            end
+        end
+    end
+    turtle.select(1)
+    return false
+end
+local function drawFuelLevel()
+    term.clear()
+    if fuelLevel < length * width * height then
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.black)
+    end
+    local fuel = " Fuel: " .. fuelLevel
+    term.setCursorPos(w - #fuel+1, 1)
+    term.write(fuel)
+    term.setBackgroundColor(colors.black)
+    term.setTextColor(colors.white)
+    term.setCursorPos(1,2)
+    term.write(" Size:   " .. length .. "L x " .. width .. "W x " .. height .. "H")
+    term.setCursorPos(1,3)
+    term.write(" Volume: " .. blocksBroken .. " of " ..(length * width * height) .. " Blocks")
+    if fuelLevel < 1 then
+        term.setCursorPos(1,5)
+        term.write(" Oh Noes! I ran out of fuel!")
+        term.setCursorPos(1,7)
+        term.write(" Q to Quit,")
+        term.setCursorPos(1,8)
+        term.write(" Any other key to refuel")
+    elseif fuelLevel < length * width * height then
+        term.setCursorPos(1,5)
+        term.write(" I may not be able to finish the task: Low Fuel :(")
+    end
+    local n = 2
+    if noRefuelFlagSet then
+        term.setCursorPos(w-6, n)
+        term.write("-Refuel")
+    else
+        term.setCursorPos(w-6, n)
+        term.write("+Refuel")
+    end
+    n = n+2
+    term.setCursorPos(w-4, n)
+    if lookingDownFlagSet then
+      if lookingLeftFlagSet then
+          term.write("<--#")
+          term.setCursorPos(w-1, n+1)
+          term.write("|")
+          term.setCursorPos(w-1, n+2)
+          term.write("v")
+      else
+          term.write("#-->")
+          term.setCursorPos(w-4, n+1)
+          term.write("|")
+          term.setCursorPos(w-4, n+2)
+          term.write("v")
+      end
+    else
+      if lookingLeftFlagSet then
+          term.setCursorPos(w-1, n)
+          term.write("^")
+          term.setCursorPos(w-1, n+1)
+          term.write("|")
+          term.setCursorPos(w-4, n+2)
+          term.write("<--#")
+      else
+          term.setCursorPos(w-4, n)
+          term.write("^")
+          term.setCursorPos(w-4, n+1)
+          term.write("|")
+          term.setCursorPos(w-4, n+2)
+          term.write("#-->")
+      end
+    end
+    n = n+3
+end
+local function checkFuel()
+    drawFuelLevel()
+    if fuelLevel < 1 then
+        if autoRefuel then
+            while isRunning and fuelLevel < 1 do
+                if tryRefuel() then
+                    return true
+                else
+                    local event, p1,p2,p3 = os.pullEvent()
+                    if event == "key" and p1 == keys.q then
+                        isRunning = false
+                        return false
+                    end
+                end
+            end
+        else
+            isRunning = false
+            return false
+        end
+    end
+    return true
+end
+function digDirection(dir, digDir)
+    if not checkFuel() or not isRunning then
+        returnToBase()
+    else
+        if isRunning then
+            while dir() == false do
+                digDir()
+                blocksBroken = blocksBroken + 1
+                if not isRunning then
+                    return false
+                end
+            end
+            return true
+        end
+    end
+    return false
+end
+function digForward()
+    if lookingLeftFlagSet then
+        if travelR == 3 then
+            travelW = travelW + 1
+        elseif travelR == 1 then
+            travelW = travelW - 1
+        end 
+    else
+        if travelR == 1 then
+            travelW = travelW + 1
+        elseif travelR == 3 then
+            travelW = travelW - 1
+        end
+    end
+    return digDirection(turtle.forward, turtle.dig)
+end
+function digUp()
+    if digDirection(turtle.up, turtle.digUp) then
+        if lookingDownFlagSet then
+            travelH = travelH - 1
+        else
+            travelH = travelH + 1
+        end
+        return true
+    end
+    return false
+end
+function digDown()
+    if digDirection(turtle.down, turtle.digDown) then
+        if lookingDownFlagSet then
+            travelH = travelH + 1
+        else
+            travelH = travelH - 1
+        end
+        return true
+    end
+    return false
+end
+function checkRotation()
+    if travelR > 3 then travelR = 0 end
+    if travelR < 0 then travelR = 3 end
+end
+function turnLeft(count)
+    for i=1, count do
+        turtle.turnLeft()
+        travelR = travelR - 1
+        checkRotation()
+    end
+end
+function turnRight(count)
+    for i=1, count do
+        turtle.turnRight()
+        travelR = travelR + 1
+        checkRotation()
+    end
+end
+function returnToBase()
+    for i = 1, travelW do
+        turtle.back()
+    end
+    for i = 1, travelH do
+        if lookingDownFlagSet then
+            turtle.up()
+        else
+            turtle.down()
+        end
+    end
+    if travelL > 1 then
+        if lookingRight == true then
+            turnRight(1)
+        else
+            turnLeft(1)
+        end
+    end
+    for i = 1, travelL, 1 do
+       turtle.back() 
+    end
+end
+function doWork()
+    if digForward() and isRunning then
+        if lookingRight then
+            turnRight(1)
+        else
+            turnLeft(1)
+        end
+        for i = 1, length, 1 do
+            travelL = i
+            lookingUp = not lookingUp --flip it
+            for j = 1, height, 1 do
+                for i = 1, width - 1, 1 do
+                    if not digForward() or not isRunning then
+                        return false
+                    end
+                end
+                lookingRight = not lookingRight --flip it
+                if j < height then
+                    if lookingUp == true then
+                        if checkFuel() then
+                            if not digUp() or not isRunning then
+                                return false
+                            end
+                            turnRight(2)
+                        end
+                    else
+                        if checkFuel() then
+                            if not digDown() or not isRunning then
+                                return false
+                            end
+                            turnRight(2)
+                        end
+                    end
+                end
+                if not isRunning then
+                    return false
+                end
+            end
+            if lookingRight == true and i < length then
+                turnRight(1)
+                if not digForward() or not isRunning then
+                    return false
+                end
+                turnRight(1)
+            elseif i < length then
+                turnLeft(1)
+                if not digForward() or not isRunning then
+                    return false
+                end
+                turnLeft(1)
+            end
+            if not isRunning then
+                return false
+            end
+        end
+    end
+end
+
+
+if isRunning then
+  if length == 0 or width == 0 or height == 0 then
+      printUsage()
+  else
+      print(" ")
+      print("Starting...")
+      sleep(0.5)
+      doWork()
+      drawFuelLevel()
+      returnToBase()
+      drawFuelLevel()
+      term.setCursorPos(1, 5)
+      if isRunning then
+          print(" Finished.")
+      else
+          if fuelLevel < 1 then
+              print(" Goodbye cruel world! x_x        ")          
+              print(" ")            
+              print("                                   ")            
+              print("                                   ")            
+          end        
+      end
+  end
+end         
+sleep(0.1)
