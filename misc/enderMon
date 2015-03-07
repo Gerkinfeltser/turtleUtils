@@ -1,5 +1,5 @@
 sleepLength = 30
-digBlock = {name = "ExtraUtilities:plant/ender_lilly", metadata = 1}
+digBlock = {name = "ExtraUtilities:plant/ender_lilly", metadata = 7}
 goalItem = "minecraft:ender_pearl"
 goalSeed = "ExtraUtilities:plant/ender_lilly"
 
@@ -15,10 +15,10 @@ local function digIt()
 				turtle.dropUp()
 			end
 		end
-		if goalSeed then
+		if goalSeed ~= nil then
 			for i=1, 16 do
 				local data = turtle.getItemDetail(i)
-				if data and data.name == goalItem then
+				if data.name == goalItem then
 					turtle.select(i)
 					turtle.placeDown()
 					return
