@@ -19,7 +19,9 @@ local function digIt()
 		sleep(1)
 		if goalSeed ~= nil then
 			for i=1, 16 do
-				local data = turtle.getItemDetail(i)
+				turtle.select(i)
+				sleep(0.3)
+				local data = turtle.getItemDetail()
 				if data ~= nil and data.name == goalItem then
 					turtle.select(i)
 					turtle.placeDown()
