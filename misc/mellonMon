@@ -11,6 +11,7 @@ local function digIt()
 	if success and data.name == digBlock.name and data.metadata == digBlock.metadata then
 		turtle.select(1)
 		turtle.digDown()
+		sleep(0.3)
 		for i=1, 16 do
 			local data = turtle.getItemDetail(i)
 			if data ~= nil and data.name == goalItem then
@@ -18,10 +19,11 @@ local function digIt()
 				turtle.dropUp()
 			end
 		end
-		if goalSeed then
+		sleep(0.3)
+		if goalSeed ~= nil then
 			for i=1, 16 do
 				local data = turtle.getItemDetail(i)
-				if data and data.name == goalItem then
+				if data ~= nil and data.name == goalItem then
 					turtle.select(i)
 					turtle.placeDown()
 					return
