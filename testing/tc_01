@@ -8,11 +8,12 @@
              v0.64: - Added ACT hotkey (see http://turtlescripts.com/project/gjdh20-Act for script)
              v0.63: - Added inventory info check
              v0.62: - Added visual fuel bar
-  Todo:     - Dynamic Keybinding display
+  Todo:     - Added inspect commands to y,h, & n
+            - Dynamic Keybinding display
             - Color GUI
             - gps
 ]]
-version = "v0.72"
+version = "v0.73"
 
 --=== Key Config ===--
 -- (see http://computercraft.info/wiki/Key_(event) for more keycodes)
@@ -46,6 +47,9 @@ inv2 =        3       -- 3:2
 inv3 =        4       -- 4:3
 inv4 =        5       -- 5:4
 whatsThis =   23      -- 23:i
+inspectUp =   21      -- 21:y
+inspectFore = 35      -- 35:h
+inspectDown = 49      -- 49:n
 
 -- Time display variables
 displayDay = true
@@ -57,6 +61,8 @@ running = true
 x, y = term.getSize()
 currentSlot = turtle.getSelectedSlot()
 fuelLimit = turtle.getFuelLimit()
+version = os.version()
+versionNum = string.match(version, '%d.%d*')
 
 --===== functions =====--
 local function seperator()
@@ -366,21 +372,43 @@ local function updateEvent()
         turtle.select(4)
         declareOutcome("Slot 4 selected")
       end
-      if key == whatsThis then
-        local version = os.version()
-        versionNum = string.match(version, '%d.%d*')
-        if versionNum >= "1.6" then
+      if versionNum >= "1.6" then
+        if key == whatsThis then
           local data = turtle.getItemDetail()
           if data then
             declareOutcome(data.name..":"..data.damage, true, true)
           else
             declareOutcome("Nothing in this slot")
           end
-        else
-          declareOutcome("Cmd not in "..os.version())
         end
+        if key == inspectUp then
+          local success, data = turtle.inspectUp()
+          if data then
+            declareOutcome(data.name..":"..data.metadata, true, true)
+          else
+            declareOutcome("That's air")
+          end
+        end
+        if key == inspectFore then
+          local success, data = turtle.inspect()
+          if data then
+            declareOutcome(data.name..":"..data.metadata, true, true)
+          else
+            declareOutcome("That's air")
+          end
+        end
+        if key == inspectDown then
+          local success, data = turtle.inspectDown()
+          if data then
+            declareOutcome(data.name..":"..data.metadata, true, true)
+          else
+            declareOutcome("That's air")
+          end
+        end
+      else
+        declareOutcome("Cmd not in "..os.version())
       end
-      
+
       -- refueling
       if key == refuel and tonumber(fuelLimit) then
         if turtle.refuel() == false then

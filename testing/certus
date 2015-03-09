@@ -1,0 +1,39 @@
+-- http://www.computercraft.info/forums2/index.php?/topic/20130-ae2-pure-certus-quartz-or-fluix-grower/
+
+cycleDone = false
+isCertus = false
+isQuartz = false
+isFluix = false
+i = 1
+
+if cycleDone == false then
+   while i < 14 do 
+   
+    turtle.suckDown()
+    turtle.select(i)
+    
+    isCertus = turtle.compareTo(14)
+    isQuartz = turtle.compareTo(15)
+    isFluix = turtle.compareTo(16)
+    
+    if isCertus == true then
+      turtle.dropUp()
+    elseif isQuartz == true then
+      turtle.dropUp()
+    elseif isFluix == true then
+      turtle.dropUp()
+    end
+    
+    if i == 13 then
+      for d=1,13,1 do
+        turtle.select(d)
+        turtle.dropDown()
+      end
+      os.sleep(20)
+      i = 0
+    end
+    
+    i = i + 1
+            
+  end
+end
