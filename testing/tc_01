@@ -8,7 +8,7 @@
              v0.64: - Added ACT hotkey (see http://turtlescripts.com/project/gjdh20-Act for script)
              v0.63: - Added inventory info check
              v0.62: - Added visual fuel bar
-  Todo:     - Added inspect commands to y,h, & n
+  Todo:     - Added inspect commands to keybindings y, h, & n
             - Dynamic Keybinding display
             - Color GUI
             - gps
@@ -159,10 +159,10 @@ end
 local function keyGUI()
   cwrite("--- KEYMAP ---",4)
   term.setCursorPos(1,5)
-  print("Move H.  Vert.  Dig - Place   InvSlot")
-  print("     W     E    R     T        1-4")
-  print("  Z-A+D-C  |    F     G        Next:]")
-  print("     S     Q    V     B        Prev:[")
+  print("Movement    Dig  Pla  Insp  Inv")
+  print("   W    ^E   R    T    Y    1-4")
+  print("Z-A+D-C |    F    G    H    Next:]")
+  print("   S    vQ   V    B    N    Prev:[")
   if tonumber(fuelLimit) then
     print("180: X     Refuel:`   LavaRefuel:5")
   else
@@ -191,7 +191,7 @@ local function helpScreen()
   print("Just place an empty bucket is in my currently selected slot, navigate me into place above a lava source block, and and hit [5].")
   print("")
   print("Slot item info only available on CraftOS 1.64 or greater.")
-  print("")
+  print("") -- Slot item info = {name,damage,count}") Inspect block info = {name,metadata}
   print("ACT by McLeopold is a easy way to send commands.")
   print("Details here: http://turtlescripts.com/project/gjdh20-Act")
   local sEvent, key = os.pullEvent()
@@ -433,6 +433,7 @@ local function updateEvent()
         if os.loadAPI("act") then
           term.setCursorPos(1, y)
           term.clearLine()
+          sleep(0.1)
           write("Command? ")
           local data = read()
           act.act(data)

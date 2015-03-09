@@ -1,6 +1,6 @@
 
 tArgs = {...}
-farm = tArgs[1] or nil
+farm = tArgs[1]
 sleepLength = 30
 running = true
 
@@ -13,24 +13,32 @@ crop = {
 		goalSeed = "ExtraUtilities:plant/ender_lilly"}
 }
 
+local function cropList()
+	local ret = {}
+	for k,v in ipairs(crop) do
+		table.insert(ret, tostring(crop[k]))
+	end
+	return table.concat(ret, ", ")
+end
+
 local function digIt()
 	local success, data = turtle.inspectDown()
-	if success and data.name == crop[farm]digBlock.name and data.metadata == crop[farm]digBlock.metadata then
+	if success and data.name == crop[farm].digBlock.name and data.metadata == crop[farm].digBlock.metadata then
 		turtle.select(1)
 		turtle.digDown()
 		sleep(0.3)
 		for i=1, 16 do
 			local data = turtle.getItemDetail(i)
-			if data ~= nil and data.name == crop[farm]goalItem then
+			if data ~= nil and data.name == crop[farm].goalItem then
 				turtle.select(i)
 				turtle.dropUp()
 			end
 		end
 		sleep(0.3)
-		if crop[farm]goalSeed ~= nil then
+		if crop[farm].goalSeed ~= nil then
 			for i=1, 16 do
 				local data = turtle.getItemDetail(i)
-				if data ~= nil and data.name == crop[farm]goalSeed then
+				if data ~= nil and data.name == crop[farm].goalSeed then
 					turtle.select(i)
 					turtle.placeDown()
 					return
@@ -45,15 +53,15 @@ term.clear()
 term.setCursorPos(1,1)
 
 if farm == nil then
-	print("usage: cmd <mellon or ender>")
+	print("usage: cmd < mellon / ender >")
 	running = false
-	return
+	break
 end
 
 while running do
 	print("Mellon, mon!")
-	print("Waiting for ".. crop[farm]digBlock.name.. ":".. crop[farm]digBlock.metadata)
-	if crop[farm]goalSeed ~= nil then print("Replanting ".. crop[farm]goalSeed) end
+	print("Waiting for ".. crop[farm].digBlock.name.. ":".. crop[farm].digBlock.metadata)
+	if crop[farm].goalSeed ~= nil then print("Replanting ".. crop[farm].goalSeed) end
 	print("ctrl+R to reboot, bah-ee!")
 	digIt()
 end
