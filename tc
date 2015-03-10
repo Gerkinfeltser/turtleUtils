@@ -3,16 +3,18 @@
   Purpose:   A utiltiy for controlling turtles via wasd & some other keys/functions
   Author(s): iTreefish
   License:   MIT License - http://opensource.org/licenses/MIT
-  Changelog: v0.72: - Added support for fuelless turtles
+  Changelog: v0.8:  - Added inspect commands & fixed inventory keys
+             v0.72: - Added support for fuelless turtles
              v0.7:  - Cleaned up code a bit, removed unnecessary/poor humor
              v0.64: - Added ACT hotkey (see http://turtlescripts.com/project/gjdh20-Act for script)
              v0.63: - Added inventory info check
              v0.62: - Added visual fuel bar
   Todo:     - Dynamic Keybinding display
             - Color GUI
-            - gps
+            - gps integration
+            - remote rednet control
 ]]
-version = "v0.72"
+version = "v0.74"
 
 --=== Key Config ===--
 -- (see http://computercraft.info/wiki/Key_(event) for more keycodes)
@@ -46,6 +48,9 @@ inv2 =        3       -- 3:2
 inv3 =        4       -- 4:3
 inv4 =        5       -- 5:4
 whatsThis =   23      -- 23:i
+inspectUp =   21      -- 21:y
+inspectFore = 35      -- 35:h
+inspectDown = 49      -- 49:n
 
 -- Time display variables
 displayDay = true
@@ -57,6 +62,8 @@ running = true
 x, y = term.getSize()
 currentSlot = turtle.getSelectedSlot()
 fuelLimit = turtle.getFuelLimit()
+version = os.version()
+versionNum = string.match(version, '%d.%d*')
 
 --===== functions =====--
 local function seperator()
@@ -153,10 +160,10 @@ end
 local function keyGUI()
   cwrite("--- KEYMAP ---",4)
   term.setCursorPos(1,5)
-  print("Move H.  Vert.  Dig - Place   InvSlot")
-  print("     W     E    R     T        1-4")
-  print("  Z-A+D-C  |    F     G        Next:]")
-  print("     S     Q    V     B        Prev:[")
+  print("Movement    Dig  Pla  Insp  Inv")
+  print("   W    ^E   R    T    Y    1-4")
+  print("Z-A+D-C |    F    G    H    Next:]")
+  print("   S    vQ   V    B    N    Prev:[")
   if tonumber(fuelLimit) then
     print("180: X     Refuel:`   LavaRefuel:5")
   else
@@ -181,11 +188,13 @@ local function helpScreen()
   print("Keys can be customized via keycodes.")
   print("Details here: http://computercraft.info/wiki/Key_(event)")
   print("")
-  print("I can be refueled with lava.")
-  print("Just place an empty bucket is in my currently selected slot, navigate me into place above a lava source block, and and hit [5].")
-  print("")
-  print("Slot item info only available on CraftOS 1.64 or greater.")
-  print("")
+  if tonumber(fuelLimit) then
+    print("I can be refueled with lava.")
+    print("Just place an empty bucket is in my currently selected slot, navigate me into place above a lava source block, and and hit [5].")
+    print("")
+  end
+  print("Slot item info & inspect available on CraftOS 1.64 and on.")
+  print("") -- Slot item info = {name,damage,count}") Inspect block info = {name,metadata}
   print("ACT by McLeopold is a easy way to send commands.")
   print("Details here: http://turtlescripts.com/project/gjdh20-Act")
   local sEvent, key = os.pullEvent()
@@ -350,37 +359,59 @@ local function updateEvent()
       end
 
       -- Inventory Slots 1-4
-      if key == "inv1" then
+      if key == inv1 then
         turtle.select(1)
         declareOutcome("Slot 1 selected")
       end
-      if key == "inv2" then
+      if key == inv2 then
          turtle.select(2)
        declareOutcome("Slot 2 selected")
       end
-      if key == "inv3" then
+      if key == inv3 then
         turtle.select(3)
         declareOutcome("Slot 3 selected")
       end
-      if key == "inv4" then
+      if key == inv4 then
         turtle.select(4)
         declareOutcome("Slot 4 selected")
       end
-      if key == whatsThis then
-        local version = os.version()
-        versionNum = string.match(version, '%d.%d*')
-        if versionNum >= "1.6" then
+      if versionNum >= "1.6" then
+        if key == whatsThis then
           local data = turtle.getItemDetail()
           if data then
             declareOutcome(data.name..":"..data.damage, true, true)
           else
             declareOutcome("Nothing in this slot")
           end
-        else
-          declareOutcome("Cmd not in "..os.version())
         end
+        if key == inspectUp then
+          local success, data = turtle.inspectUp()
+          if success then
+            declareOutcome(data.name..":"..data.metadata, true, true)
+          else
+            declareOutcome("That's air")
+          end
+        end
+        if key == inspectFore then
+          local success, data = turtle.inspect()
+          if success then
+            declareOutcome(data.name..":"..data.metadata, true, true)
+          else
+            declareOutcome("That's air")
+          end
+        end
+        if key == inspectDown then
+          local success, data = turtle.inspectDown()
+          if success then
+            declareOutcome(data.name..":"..data.metadata, true, true)
+          else
+            declareOutcome("That's air")
+          end
+        end
+      else
+        declareOutcome("Cmd not in "..os.version())
       end
-      
+
       -- refueling
       if key == refuel and tonumber(fuelLimit) then
         if turtle.refuel() == false then
@@ -405,6 +436,7 @@ local function updateEvent()
         if os.loadAPI("act") then
           term.setCursorPos(1, y)
           term.clearLine()
+          sleep(0.1)
           write("Command? ")
           local data = read()
           act.act(data)

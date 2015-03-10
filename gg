@@ -20,20 +20,21 @@ local pre_dl = "print('Starting download...')"  -- Command(s) to run before down
 local post_dl = "print('Download complete!')"   -- Command(s) to run after download completes.
 
 function os.getComputerType()
-  local ret = {}
+  local x,y = term.getSize()
+  local ret
 
 --  if term.isColor() then
 --    table.insert(ret, "advanced")
 --  end
 
-  if pocket then
-    table.insert(ret, "pda")
-  elseif turtle then
-    table.insert(ret, "turtle")
-  elseif commands then
-    table.insert(ret, "command")
+  if x == 26 then
+    ret = "pda"
+  elseif x == 39 then
+    ret = "turtle"
+--  elseif commands then
+--    table.insert(ret, "command")
   else
-    table.insert(ret, "computer")
+    ret = "computer"
   end
   return ret -- table.concat(ret, "_")
 end
@@ -41,8 +42,10 @@ end
 comptype = os.getComputerType()
 if comptype == "turtle" then
   args[2] = "turtleUtils"
+  print("This is a turtle")
 else
   args[2] = "computerUtils"
+  print("This is not a turtle")
 end
 args[3] = args[3] or "master"
 args[4] = args[4] or ""
