@@ -356,7 +356,7 @@ local function updateEvent()
       end
 
       -- Inventory Slots 1-4
-      if key == "inv1" then
+      if key == inv1 then
         turtle.select(1)
         declareOutcome("Slot 1 selected")
       end
