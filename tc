@@ -148,10 +148,18 @@ function rednetOn()
   term.write(rednetComment)
 end
 
+local function labelCheck()
+  local label = os.getComputerLabel()
+  local ID = os.getComputerID()
+  if label == nil then
+    shell.run("label", "set", ID)
+  end
+end
+
 local function headerGui()
   term.clear()
   term.setCursorPos(1,1)
-  term.write("Name(ID): " .. os.getComputerLabel() .. "(" .. os.getComputerID() ..")")
+  term.write("Name(ID): " .. os.getComputerLabel() .. " (" .. os.getComputerID() ..")")
   fuelDrawUpdate()
   term.setCursorPos(1,3)
   seperator()
@@ -452,6 +460,7 @@ local function updateEvent()
 end
 
 while running do
+  labelCheck()
   mainGUI()
   rednetOn()
   updateEvent()
