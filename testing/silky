@@ -1,0 +1,51 @@
+local tArgs = {...}
+local length = tonumber(tArgs[1]) or 5
+local width = tonumber(tArgs[2]) or 3
+local height = tonumber(tArgs[3]) or 3
+local turnRight = true
+local slot = 1
+
+print("1. Place turtle facing place for lowerleft block.")
+print("2. Load turtle with materials for silktouching")
+print("3. Type 'silky <length> <width> <height>'")
+
+turtle.select(slot)
+
+turtle.forward()
+for k = 1, height do
+  turtle.up()
+  for j = 1, width do
+
+    for i = 1, length do
+      if turtle.getItemCount(slot) == 0 then
+        slot = slot + 1
+        turtle.select(slot)
+        turtle.placeDown()
+      else
+        turtle.placeDown()
+      end
+      
+      if i < length then
+        turtle.forward()
+      end
+    
+    end
+    
+    if j < width then
+    
+      if turnRight == true then
+        turtle.turnRight()
+        turtle.forward()
+        turtle.turnRight()
+        turnRight = false
+      else
+        turtle.turnLeft()
+        turtle.forward()
+        turtle.turnLeft()
+        turnRight = true
+      end
+      
+    end
+    
+  end
+end
