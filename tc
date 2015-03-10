@@ -212,6 +212,7 @@ local function helpScreen()
 end
 
 local function mainGUI()
+  rednetOn()
   headerGui()
   keyGUI()
 end
@@ -462,6 +463,5 @@ end
 while running do
   labelCheck()
   mainGUI()
-  rednetOn()
   updateEvent()
 end
