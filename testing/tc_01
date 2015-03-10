@@ -360,15 +360,15 @@ local function updateEvent()
         turtle.select(1)
         declareOutcome("Slot 1 selected")
       end
-      if key == "inv2" then
+      if key == inv2 then
          turtle.select(2)
        declareOutcome("Slot 2 selected")
       end
-      if key == "inv3" then
+      if key == inv3 then
         turtle.select(3)
         declareOutcome("Slot 3 selected")
       end
-      if key == "inv4" then
+      if key == inv4 then
         turtle.select(4)
         declareOutcome("Slot 4 selected")
       end
@@ -383,7 +383,7 @@ local function updateEvent()
         end
         if key == inspectUp then
           local success, data = turtle.inspectUp()
-          if data then
+          if success then
             declareOutcome(data.name..":"..data.metadata, true, true)
           else
             declareOutcome("That's air")
@@ -391,7 +391,7 @@ local function updateEvent()
         end
         if key == inspectFore then
           local success, data = turtle.inspect()
-          if data then
+          if success then
             declareOutcome(data.name..":"..data.metadata, true, true)
           else
             declareOutcome("That's air")
@@ -399,7 +399,7 @@ local function updateEvent()
         end
         if key == inspectDown then
           local success, data = turtle.inspectDown()
-          if data then
+          if success then
             declareOutcome(data.name..":"..data.metadata, true, true)
           else
             declareOutcome("That's air")
