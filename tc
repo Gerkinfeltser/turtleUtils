@@ -195,7 +195,7 @@ local function helpScreen()
   cwrite("tControl "..version,1)
   term.setCursorPos(1,3)
   print("- For keycodes see:")
-  print("http://computercraft.info/wiki/Key_(event)")
+  print("computercraft.info/wiki/Key_(event)")
   if tonumber(fuelLimit) then
     print("- I can be refueled with lava.")
     print("Give me and empty bucket & lava source block below. Then hit [5].")
@@ -203,7 +203,7 @@ local function helpScreen()
   print("- Block/item info cc1.64 & up")
   -- Slot item info = {name,damage,count}") Inspect block info = {name,metadata}
   print("- For ACT by McLeopold details:")
-  print("http://turtlescripts.com/project/gjdh20-Act")
+  print("turtlescripts.com/project/gjdh20-Act")
   local sEvent, key = os.pullEvent()
   if sEvent == "key" then
     return
