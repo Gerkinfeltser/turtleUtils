@@ -194,7 +194,7 @@ local function helpScreen()
   term.setCursorPos(1,1)
   cwrite("tControl "..version,1)
   term.setCursorPos(1,3)
-  print("- For keycodes see:"
+  print("- For keycodes see:")
   print("http://computercraft.info/wiki/Key_(event)")
   if tonumber(fuelLimit) then
     print("- I can be refueled with lava.")
