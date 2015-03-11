@@ -61,7 +61,6 @@ for i=1, math.abs(vpos) do
 end
 -- Height
 for k = 1, height do
-  turtle.up()
   -- Width
   for j = 1, width do
     -- Length
@@ -95,6 +94,7 @@ for k = 1, height do
   -- turn around
   turtle.turnRight()
   turtle.turnRight()
+  turtle.up()
   -- Go left first if even width requested
   if width % 2 == 0 then
     turnRight = not turnRight
