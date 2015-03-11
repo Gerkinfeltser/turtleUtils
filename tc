@@ -192,7 +192,7 @@ end
 local function helpScreen()
   term.clear()
   term.setCursorPos(1,1)
-  cwrite("tControl "..version..",1)
+  cwrite("tControl "..version,1)
   term.setCursorPos(1,3)
   print("- For keycodes see:"
   print("http://computercraft.info/wiki/Key_(event)")
