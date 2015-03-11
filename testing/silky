@@ -46,7 +46,8 @@ for k = 1, height do
       end
       
     end
-  turtle.turnRight()
-  turtle.turnRight()  
   end
+  turtle.turnRight()
+  turtle.turnRight()
+  -- if width 
 end
