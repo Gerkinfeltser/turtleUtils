@@ -13,18 +13,16 @@ print("3. Type 'silky <length> <width> <height>'")
 turtle.select(slot)
 
 turtle.forward()
-for k = 1, height do
-  for i=1, math.abs(vpos) do
-    if vpos > 0 then
-      turtle.up()
-    else
-      turtle.down()
-    end
+for i=1, math.abs(vpos-1) do
+  if vpos > 0 then
+    turtle.up()
+  else
+    turtle.down()
   end
-
-  turtle.up()
-  for j = 1, width do
-
+end
+for k = 1, height do
+ turtle.up()
+ for j = 1, width do
     for i = 1, length do
       if turtle.getItemCount(slot) == 0 then
         slot = slot + 1
