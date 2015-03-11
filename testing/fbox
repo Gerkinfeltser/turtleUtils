@@ -63,9 +63,7 @@ end
 ]]
 -- Height
 for k = 1, height do
-  if k < height then
-    turtle.up()
-  end
+  turtle.up()
   -- Width
   for j = 1, width do
     -- Length
