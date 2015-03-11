@@ -2,7 +2,7 @@ local tArgs = {...}
 local length = tonumber(tArgs[1]) or 5
 local width = tonumber(tArgs[2]) or 3
 local height = tonumber(tArgs[3]) or 3
-local vpos = tonumber(tArgs[4]) or 1
+-- local vpos = tonumber(tArgs[4]) or 1
 local turnRight = true
 local slot = 1
 
@@ -44,13 +44,14 @@ local function returnHome()
   end    
 end
 
-print("1. Place turtle facing leftmost block.")
-print("2. Load turtle with materials for fortuning")
-print("3. Type 'fbox <length> <width> <height> <desired height>'")
+print("1. Place turtle in leftmost block space & make sure area for placing is clear.")
+print("2. Load turtle with materials for fortuning.")
+print("3. Type 'fbox <length> <width> <height>'") -- ' <desired height>'")
+print("   *If LWH not passed, 5x3x3 will be used")
 print("4. Get out of the way!")
 
 turtle.select(slot)
-
+--[[
 turtle.forward()
 for i=1, math.abs(vpos) do
   if vpos > 0 then
@@ -59,14 +60,21 @@ for i=1, math.abs(vpos) do
     turtle.down()
   end
 end
+]]
 -- Height
 for k = 1, height do
+  if k < height then
+    turtle.up()
+  end
   -- Width
   for j = 1, width do
     -- Length
     for i = 1, length do
       if turtle.getItemCount(slot) == 0 then
         slot = slot + 1
+        if slot > 16 then
+          slot = 1
+        end
         turtle.select(slot)
         turtle.placeDown()
       else
@@ -94,7 +102,6 @@ for k = 1, height do
   -- turn around
   turtle.turnRight()
   turtle.turnRight()
-  turtle.up()
   -- Go left first if even width requested
   if width % 2 == 0 then
     turnRight = not turnRight
