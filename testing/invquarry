@@ -5,20 +5,6 @@ local height = tonumber(tArgs[3]) or 16
 local turnRight = true
 local slot = 1
 
-term.clear()
-term.getCursorPos(1,1)
-print("Fill me up please and hit a key")
-
-local event, key = os.pullEvent("key")
-if key then print("Ready. Starting in:") end
-
-for i=3, 1, -1 do
-  write(i," ")
-  sleep(1)
-end
-
-print("Out of the way!")
-
 turtle.select(slot)
 -- Height
 for k = 1, height do
@@ -45,4 +31,3 @@ for k = 1, height do
   turtle.turnRight()
   turtle.turnRight()
 end
-print("Done")
