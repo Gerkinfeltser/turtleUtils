@@ -5,62 +5,15 @@ local height = tonumber(tArgs[3]) or 3
 -- local vpos = tonumber(tArgs[4]) or 1
 local turnRight = true
 local slot = 1
-
-local function returnHome()
-  if width % 2 == 0 and height % 2 == 0 then
-    turtle.turnRight()
-    turtle.turnRight()
-    turtle.forward()
-  elseif  width % 2 == 0 and height % 2 ~= 0 then
-    turtle.turnRight()
-    turtle.turnRight()
-    turtle.forward()
-    turtle.turnRight()
-    for i=1, width do
-      turtle.forward()
-    end
-    turtle.turnLeft()
-  elseif width % 2 ~= 0 and height % 2 == 0 then
-    turtle.turnRight()
-    turtle.turnRight()
-    turtle.forward()
-  else
-    for i=1, length do
-      turtle.forward()
-    end
-    turtle.turnRight()
-    for i=1, width do
-      turtle.forward()
-    end
-    turtle.turnLeft()
-  end
-  -- go down/up
-  for i=1, math.abs(vpos) do
-    if vpos > 0 then
-      turtle.up()
-    else
-      turtle.down()
-    end
-  end    
-end
-
+ 
 print("1. Place turtle in leftmost block space & make sure area for placing is clear.")
 print("2. Load turtle with materials for fortuning.")
 print("3. Type 'fbox <length> <width> <height>'") -- ' <desired height>'")
 print("   *If LWH not passed, 5x3x3 will be used")
 print("4. Get out of the way!")
-
+sleep(3)
+ 
 turtle.select(slot)
---[[
-turtle.forward()
-for i=1, math.abs(vpos) do
-  if vpos > 0 then
-    turtle.up()
-  else
-    turtle.down()
-  end
-end
-]]
 -- Height
 for k = 1, height do
   turtle.up()
@@ -101,12 +54,3 @@ for k = 1, height do
   turtle.turnRight()
   turtle.turnRight()
   -- Go left first if even width requested
-  if width % 2 == 0 then
-    turnRight = not turnRight
-    if turnRight == true then
-      print("going to turn right again")
-    else
-      print("going left this time")
-    end
-  end
-end
