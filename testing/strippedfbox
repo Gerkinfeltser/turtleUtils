@@ -13,7 +13,7 @@ local event, key = os.pullEvent("key")
 if key then print("Ready. Starting in:") end
 
 for i=3, 1, -1 do
-  write(i," ")
+  print(i.."...")
   sleep(1)
 end
 
@@ -39,6 +39,20 @@ for k = 1, height do
       end
       if i < length then
         turtle.forward()
+      end
+    end
+    -- turn right or left
+    if j < width then
+      if turnRight == true then
+        turtle.turnRight()
+        turtle.forward()
+        turtle.turnRight()
+        turnRight = false
+      else
+        turtle.turnLeft()
+        turtle.forward()
+        turtle.turnLeft()
+        turnRight = true
       end
     end
   end
