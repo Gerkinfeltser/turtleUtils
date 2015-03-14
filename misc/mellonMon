@@ -8,7 +8,7 @@ crop = {
 	mellon = {digBlock = {name = "minecraft:melon_block", metadata = 0},
 		goalItem = "minecraft:melon",
 		goalSeed = nil},
-	ender = {digBlock = {name = "ExtraUtilities:plant/ender_lilly", metadata = 1},
+	ender = {digBlock = {name = "ExtraUtilities:plant/ender_lilly", metadata = 7},
 		goalItem = "minecraft:ender_pearl",
 		goalSeed = "ExtraUtilities:plant/ender_lilly"}
 }
