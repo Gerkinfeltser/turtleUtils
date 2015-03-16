@@ -1,5 +1,6 @@
+--File: tControl
+version = "v0.74"
 --[[
-  File:      tControl
   Purpose:   A utiltiy for controlling turtles via wasd & some other keys/functions
   Author(s): iTreefish
   License:   MIT License - http://opensource.org/licenses/MIT
@@ -15,7 +16,6 @@
             - gps integration
             - remote rednet control
 ]]
-version = "v0.74"
 
 --=== Key Config ===--
 -- (see http://computercraft.info/wiki/Key_(event) for more keycodes)
@@ -115,11 +115,11 @@ local function fuelDrawUpdate()
 end
 
 local function declareOutcome(message, bool, noDate)
-  term.setCursorPos(1,y)
-  term.clearLine()
   if bool ~= nil and tonumber(fuelLimit) then
    fuelDrawUpdate()
   end
+  term.setCursorPos(1,y)
+  term.clearLine()
   if noDate == nil then
     term.write(dayTimeUpdate().. message)
   else
