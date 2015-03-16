@@ -1,10 +1,11 @@
 --File: tControl
-version = "v0.74"
+version = "v0.82"
 --[[
   Purpose:   A utiltiy for controlling turtles via wasd & some other keys/functions
   Author(s): iTreefish
   License:   MIT License - http://opensource.org/licenses/MIT
-  Changelog: v0.81: - 'F1' page tweaks
+  Changelog: v0.82: - Fixed improper positioning of positive outcomes
+             v0.81: - 'F1' page tweaks
              v0.8:  - Added inspect commands & fixed inventory keys
              v0.72: - Added support for fuelless turtles
              v0.7:  - Cleaned up code a bit, removed unnecessary/poor humor
