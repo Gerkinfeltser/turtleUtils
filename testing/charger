@@ -1,0 +1,48 @@
+running = true
+local sleepTime = 10
+local charging = false
+
+term.clear()
+term.setCursorPos(1,1)
+print("Monitoring item charge...")
+
+-- check where item is located upon last termination
+turtle.select(1)
+if turtle.suck() then
+	turtle.drop()
+else
+	if turtle.suckDown()
+		turtle.dropDown()
+		charging = true
+	end
+end
+
+while true do
+	if charging == false then
+		turtle.select(1)
+		turtle.suck()
+		local data turtle.getItemDetail()
+		if data and data.damage < 25 then
+			-- less then 25% charge, place in capacitor
+			turtle.dropDown()
+			charging = true
+		else
+			-- charge not necessary, replace
+			turtle.drop()
+			charging = false
+		end
+		sleep(sleepTime)
+	else
+		turtle.select(1)
+		turtle.suckDown()
+		local data turtle.getItemDetail()
+		if data and data.damage == 0 then
+			turtle.drop()
+			charging = false
+		else
+			turtle.dropDown()
+			charging = true
+		end
+		sleep(sleepTime)
+	end
+end

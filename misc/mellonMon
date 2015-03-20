@@ -1,7 +1,7 @@
 
 tArgs = {...}
-farm = tArgs[1]
-sleepLength = 30
+farm = tArgs[1] or ender
+sleepLength = tArgs[2] or 30
 running = true
 
 crop = {
