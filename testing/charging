@@ -1,0 +1,28 @@
+charging = false
+chargeDelay = 10
+chopDelay = 5
+
+turtle.select(1)
+if turtle.suck() then
+	turtle.dropDown()
+end
+term.clear()
+term.setCursorPos(1,1)
+print("Script restarted, charging for "..chargeDelay)
+charging = true
+sleep(chargeDelay)
+
+while true do
+	turtle.select(1)
+	if charging = true then
+		turtle.suckDown()
+		turtle.drop()
+		charging = false
+		sleep(chopDelay)
+	else
+		turtle.suck()
+		turtle.dropDown()
+		charging = true
+		sleep(chargeDelay)
+	end
+end
