@@ -14,7 +14,7 @@ sleep(chargeDelay)
 
 while true do
 	turtle.select(1)
-	if charging = true then
+	if charging == true then
 		turtle.suckDown()
 		turtle.drop()
 		term.clear()
