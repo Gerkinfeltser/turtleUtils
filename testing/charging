@@ -17,11 +17,17 @@ while true do
 	if charging = true then
 		turtle.suckDown()
 		turtle.drop()
+		term.clear()
+		term.setCursorPos(1,1)
+		print("Chopping for "..chopDelay)
 		charging = false
 		sleep(chopDelay)
 	else
 		turtle.suck()
 		turtle.dropDown()
+		term.clear()
+		term.setCursorPos(1,1)
+		print("Charging for "..chargeDelay)
 		charging = true
 		sleep(chargeDelay)
 	end
