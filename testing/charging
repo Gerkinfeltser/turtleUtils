@@ -9,6 +9,7 @@ end
 term.clear()
 term.setCursorPos(1,1)
 print("Script restarted, charging for "..chargeDelay)
+print("ctrl+t to terminate")
 charging = true
 sleep(chargeDelay)
 
@@ -20,6 +21,7 @@ while true do
 		term.clear()
 		term.setCursorPos(1,1)
 		print("Chopping for "..chopDelay)
+		print("ctrl+t to terminate")
 		charging = false
 		sleep(chopDelay)
 	else
@@ -28,6 +30,7 @@ while true do
 		term.clear()
 		term.setCursorPos(1,1)
 		print("Charging for "..chargeDelay)
+		print("ctrl+t to terminate")
 		charging = true
 		sleep(chargeDelay)
 	end
