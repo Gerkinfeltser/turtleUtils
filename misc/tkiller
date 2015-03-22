@@ -3,7 +3,7 @@ redstoneOn = rs.getInput(side)
  
 print("Killing...")
 print("ctrl+R to reboot")
-        while redstoneOn do
+        while redstoneOn == false do
                 for i = 1, 100 do
                 turtle.attack()
                 sleep(0.1)
