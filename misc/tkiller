@@ -1,16 +1,18 @@
 side = "back"
 redstoneOn = rs.getInput(side)
- 
+
 print("Killing...")
-print("ctrl+R to reboot")
-        while redstoneOn == false do
-                for i = 1, 100 do
-                turtle.attack()
-                sleep(0.1)
+while true
+        print("ctrl+R to reboot")
+                while redstoneOn == false do
+                        for i = 1, 100 do
+                        turtle.attack()
+                        sleep(0.1)
+                end
+                for i = 1, 16 do
+                        turtle.select(i)
+                        turtle.dropDown()
+                end
+                turtle.select(1)
         end
-        for i = 1, 16 do
-                turtle.select(i)
-                turtle.dropDown()
-        end
-        turtle.select(1)
 end
