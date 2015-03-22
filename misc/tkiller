@@ -2,7 +2,7 @@ side = "back"
 redstoneOn = rs.getInput(side)
 
 print("Killing...")
-while true
+while true do
         print("ctrl+R to reboot")
                 while redstoneOn == false do
                         for i = 1, 100 do
