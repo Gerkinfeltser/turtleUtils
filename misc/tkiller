@@ -25,12 +25,11 @@ while redstoneOn == leverState do
 		]]
 	end
 end
---[[
-if leverState == nil then
+
+if leverState == false then
 	print(side.. "RS on, quiting")
 	return
 else
 	print(side.. "RS off, quiting")
 	return
 end
-]]
