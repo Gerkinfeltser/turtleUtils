@@ -72,9 +72,7 @@ for k = 1, height do
         slot = slot + 1
         if slot > 16 then
           slot = 1
-          if turtle.getItemCount(slot) == 0 then
-            break
-          end
+          if turtle.getItemCount(slot) == 0 then break end
         end
         turtle.select(slot)
         turtle.placeDown()

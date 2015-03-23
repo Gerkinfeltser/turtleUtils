@@ -14,7 +14,6 @@ while redstoneOn == leverState do
 	for i = 1, 300 do
 		turtle.attack()
 		sleep(0.1)
-		--[[
 		if autoDrop and turtle.getItemCount(3) > 1 then
 			for i = 1, 16 do
 				turtle.select(i)
@@ -22,7 +21,6 @@ while redstoneOn == leverState do
 			end
 			turtle.select(1)
 		end
-		]]
 	end
 end
 
