@@ -23,7 +23,7 @@ while true do
 		end
 	end
 end
-
+--[[
 if leverState == nil then
 	print(side.. "RS on, quiting")
 	return
@@ -31,3 +31,4 @@ else
 	print(side.. "RS off, quiting")
 	return
 end
+]]
