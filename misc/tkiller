@@ -22,6 +22,8 @@ while true do
 end
 if leverState == nil then
 	print(side.. "RS on, quiting")
+	break
 else
 	print(side.. "RS off, quiting")
+	break
 end
