@@ -3,7 +3,7 @@ tArgs[1] = tArgs[1] or "back"
 side = tArgs[1]
 redstoneOn = rs.getInput(side)
 autoDrop = true
-leverState = nil
+leverState = false
 
 print("Killing...")
 print("ctrl+R to reboot")
@@ -14,6 +14,7 @@ while true do
 			turtle.attack()
 			sleep(0.1)
 		end
+		--[[
 		if autoDrop and turtle.getItemCount(3) > 1 then
 			for i = 1, 16 do
 				turtle.select(i)
@@ -21,6 +22,7 @@ while true do
 			end
 			turtle.select(1)
 		end
+		]]
 	end
 end
 --[[
