@@ -1,18 +1,27 @@
-side = "back"
+tArgs = {...}
+tArgs[1] = tArgs[1] or "back"
+side = tArgs[1]
 redstoneOn = rs.getInput(side)
 
+leverState = nil
+
 print("Killing...")
+print("ctrl+R to reboot")
 while true do
-        print("ctrl+R to reboot")
-                while redstoneOn == false do
-                        for i = 1, 100 do
-                        turtle.attack()
-                        sleep(0.1)
-                end
-                for i = 1, 16 do
-                        turtle.select(i)
-                        turtle.dropDown()
-                end
-                turtle.select(1)
-        end
+	while redstoneOn == leverState do
+	for i = 1, 100 do
+		turtle.attack()
+		sleep(0.1)
+		for i = 1, 16 do
+			turtle.select(i)
+			turtle.dropDown()
+		end
+	end
+	turtle.select(1)
+	end
+end
+if leverState == nil then
+	print(side.. "RS on, quiting")
+else
+	print(side.. "RS off, quiting")
 end
