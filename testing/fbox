@@ -100,13 +100,4 @@ for k = 1, height do
   -- turn around
   turtle.turnRight()
   turtle.turnRight()
-  -- Go left first if even width requested
-  if width % 2 == 0 then
-    turnRight = not turnRight
-    if turnRight == true then
-      print("going to turn right again")
-    else
-      print("going left this time")
-    end
-  end
 end
