@@ -1,5 +1,4 @@
 tArgs = {...}
--- tArgs[1] = tArgs[1] or "back"
 side = tArgs[1] or "back"
 redstoneOn = rs.getInput(side)
 autoDrop = true
@@ -16,8 +15,7 @@ while redstoneOn == leverState do
 		turtle.attack()
 		sleep(0.1)
 	end
-	local overflowCheckSlot = turtle.getItemCount(3)
-	if autoDrop and overflowCheckSlot > 1 then
+	if autoDrop then
 		for i = 1, 16 do
 			turtle.select(i)
 			turtle.dropDown()
