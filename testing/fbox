@@ -25,9 +25,12 @@ for k = 1, height do
     for i = 1, length do
       if turtle.getItemCount(slot) == 0 then
         for i=1, 17 do
-          if i < 17 and turtle.getItemCount(i) then
-            slot = i
-          elseif i == 17 then
+          if i < 17 then
+            if turtle.getItemCount(i) then
+              slot = i
+              return
+            end
+          else
             error("No more mats")
           end
         end
