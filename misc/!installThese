@@ -10,12 +10,12 @@ pastebin get nFSUKiYE lava
 pastebin get wJVmXZv7 xSh
 -- Luaide
 pastebin get vyAZc6tJ li
-pastebin get zkb4FY4L shapebuilder
+pastebin get zkb4FY4L shapebuilder -- modified to handle fuelless turtles
 pastebin get w1RtfqFd market
 market get gjdh3r act y
 market get gjdh3s do y
+market get gjdi4a platformII y -- modified to handle fuelless turtles
 
 //=== OPTIONALLY GET THESE ===//
-market get gjdi4a platform y
 market get gjdhj7 obsidian y
 market get gjdh14 cplatform y

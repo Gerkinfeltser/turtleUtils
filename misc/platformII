@@ -1,0 +1,209 @@
+--[[
+Credit to Zach Dyer for the original program that I based this on
+'Easy Platform Builder'.
+
+Current version: 2.0
+Pastebin: M0i8fDU5
+
+Changelog:
+5/20/2014 - added torch placing, block detection
+5/31/2014 - added mob attacking, better block detection, 
+inventory requests when empty, resume on keypress.
+--]]
+
+local tArgs = {...}
+
+local length = tonumber(tArgs[1]) 
+local width = tonumber(tArgs[2])
+local torch_interval = tonumber(tArgs[3])
+
+if torch_interval == nil then
+    torch_interval = 0
+end
+
+local turnRight = true
+local slot = 1
+local interval = 0
+
+function pauseAnyKey()
+   -- if event == "key" and p1 == keys.q then
+   while true do
+        local event, p1,p2,p3 = os.pullEvent()
+        if event == "key" then
+            return p1
+        end
+        sleep(0.5)
+   end
+end
+
+-- Kudos to BlockSmith on ComputerCraft.info forums for the suggestion!
+function refuel(dim1,dim2)
+  if tonumber(turtle.getFuelLevel()) then
+    dim1 = dim1 or 1
+  	dim2 = dim2 or 1
+  	fuelReq = dim1 * dim2
+  	turtle.select(15)   
+  	while (turtle.getFuelLevel() < fuelReq) do 
+  		--inform the user that the turtle is out of fuel
+  		print("Waiting for fuel in slot 15...")
+        print("Press any key to continue.")
+  		pauseAnyKey()
+  		-- use all of the fuel in slot 15
+  		turtle.refuel()
+  		-- then go back and check the level again
+  	end
+  	-- select the active slot
+  	turtle.select(slot)
+  end
+end
+
+function flip()
+  turtle.turnRight()
+  turtle.turnRight()
+end
+
+function digDetect() 
+  while turtle.detect() do
+    turtle.dig()
+  end
+end
+
+function psycho()
+  turtle.attack()
+  turtle.attackUp()
+  turtle.attackDown()
+  turtle.turnLeft()
+  turtle.attack()
+  turtle.turnRight()
+  turtle.turnRight()
+  turtle.attack()
+  turtle.turnLeft()
+end
+
+function digDetectUp()
+  while turtle.detectUp() do
+    turtle.digUp()
+  end
+end
+
+function tryForward()
+  while not turtle.forward() do
+    psycho() --turtle.attack()
+    turtle.dig()
+  end
+end
+
+function tryPlaceDown(mode)
+  mode = mode or "ignore me"
+  while not turtle.placeDown() do
+    if mode == "dig" then
+        turtle.digDown()
+    end
+    --turtle.attackDown()
+    psycho()
+    turtle.attack()
+  end
+end
+
+function findInventory()
+  for i=slot,14 do
+    if turtle.getItemCount(i) > 0 then
+      return i
+    end
+  end
+  for i=1,slot-1 do
+    if turtle.getItemCount(i) > 0 then
+      return i
+    end
+  end
+  return -1
+end
+
+function torchPlacer()
+  turtle.select(16)
+  if turtle.getItemCount(16) == 0 then
+    print("I need more torches!")
+    print("Put more torches in slot 16 and press any key to make me resume!")
+    pauseAnyKey()
+  end
+  digDetectUp()
+  turtle.up()
+  flip()
+  digDetect()
+  flip()
+  turtle.back()
+  tryPlaceDown()
+  --turtle.placeDown()
+  tryForward()
+  turtle.down()
+end
+
+if width == nil then
+  print("1. Place turtle facing direction of said platform on left side.")
+  print("2. Load turtle with materials for the platform. If placing torches, add light source blocks to slot 16.")
+  print("3. Type 'platform <length> <width> [torch_interval]'")
+  return
+end
+
+turtle.select(slot)
+
+
+-- set the initial fuel load
+refuel(length,width)
+tryForward()
+
+for j = 1, width, 1 do
+
+  for i = 1, length, 1 do
+    if turtle.getItemCount(slot) == 0 then
+        x = findInventory()
+      while x == -1 do    
+          if x == -1 then
+              print("I ran out of materials!")
+              print("Put mats in slots 1 to 14 then")
+              print("press any key to continue.")
+              pauseAnyKey()
+              x = findInventory()
+          end
+     end
+     slot = x
+    end
+
+    turtle.select(slot)
+    tryPlaceDown("dig")
+    
+    if i < length then
+      digDetect()
+      tryForward()
+    end
+
+    if torch_interval > 0 then
+        interval = interval + 1
+        if interval == torch_interval then
+          interval = 0
+          torchPlacer()
+        end
+    end
+    
+  end
+  
+  if j < width then
+  
+    if turnRight == true then
+      turtle.turnRight()
+      digDetect()
+      tryForward()
+      turtle.turnRight()
+      turnRight = false
+    else
+      turtle.turnLeft()
+      digDetect()
+      tryForward()
+      turtle.turnLeft()
+      turnRight = true
+    end
+    
+  end
+  
+  refuel(5) -- cursory check for fuel
+end
