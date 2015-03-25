@@ -24,13 +24,11 @@ for k = 1, height do
     -- Length
     for i = 1, length do
       if turtle.getItemCount(slot) == 0 then
-        slot = slot + 1
-        if slot > 16 then
-          slot = 1
-          if turtle.getItemCount(slot) == 0 then
-            term.clear()
-            term.setCursorPos(1,1)
-            break
+        for i=1, 17 do
+          if turtle.getItemCount(i) then
+            slot = i
+          if i == 17 then
+            error("No more mats")
           end
         end
         turtle.select(slot)
