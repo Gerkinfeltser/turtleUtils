@@ -1,6 +1,6 @@
 tArgs = {...}
-tArgs[1] = tArgs[1] or "back"
-side = tArgs[1]
+-- tArgs[1] = tArgs[1] or "back"
+side = tArgs[1] or "back"
 redstoneOn = rs.getInput(side)
 autoDrop = true
 leverState = false
@@ -11,15 +11,16 @@ print("Killing...")
 print("ctrl+R to reboot")
 
 while redstoneOn == leverState do
+	turtle.select(1)
 	for i = 1, 300 do
 		turtle.attack()
 		sleep(0.1)
-		if autoDrop and turtle.getItemCount(3) > 1 then
-			for i = 1, 16 do
-				turtle.select(i)
-				turtle.dropDown()
-			end
-			turtle.select(1)
+	end
+	local overflowCheckSlot = turtle.getItemCount(3)
+	if autoDrop and overflowCheckSlot > 1 then
+		for i = 1, 16 do
+			turtle.select(i)
+			turtle.dropDown()
 		end
 	end
 end
