@@ -1,0 +1,32 @@
+running = true
+count = 0
+x,y = term.getSize()
+
+local function printCycle()
+	term.clearLine()
+	term.setCursorPos(1,1)
+	print("cycle "..count)
+end
+
+term.clear()
+printCycle()
+
+while running do
+	if count > 256 then
+		count = 0
+	end
+
+	for i=2, y do
+		term.setCursorPos(1,i)
+		term.clearLine()
+	end
+
+	term.setCursorPos(1,2)
+	for x=1, 64 do
+		write(x.." ")
+		sleep(1)
+	end
+	
+	count = count + 1
+	printCycle()
+end
