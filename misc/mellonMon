@@ -11,6 +11,9 @@ crop = {
 	ender = {digBlock = {name = "ExtraUtilities:plant/ender_lilly", metadata = 7},
 		goalItem = "minecraft:ender_pearl",
 		goalSeed = "ExtraUtilities:plant/ender_lilly"}
+	flux = {digblock = {name = "FluxedCrystals:plant/fluxedCrystal", metadata = 4},
+		goalItem = "",
+		goalSeed = ""}
 }
 
 local function cropList()
