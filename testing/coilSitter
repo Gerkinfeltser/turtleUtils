@@ -1,5 +1,5 @@
 Side = "front"
-coilChargeLvl = rs.redstone.getAnalogInput(Side)
+coilChargeLvl = rs.getAnalogInput(Side)
 coilMaxAllowance = 12
 isPaused = false
 
@@ -8,11 +8,11 @@ while not isPaused do
 		term.clear()
 		print("Coil charged to "..coilChargeLvl.."/15")
 		print("Holding...")
-		rs.redstone.setOutput(Side, true)
+		rs.setOutput(Side, true)
 		isPaused = true
 	else
 		term.clear()
 		print("Coil charged to "..coilChargeLvl.."/15")
-		rs.redstone.setOutput(Side, false)
+		rs.setOutput(Side, false)
 	end
 end
