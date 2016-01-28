@@ -1,0 +1,13 @@
+local cid = 0 --sender
+rednet.open('back')
+--rs.setOutput('right', false)
+
+while true do
+  i,m,p = rednet.receive()
+  print(i)
+  if i == cid then
+    print(m)
+    sleep(1)
+    shell.run(m)
+    end
+  end
