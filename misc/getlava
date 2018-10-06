@@ -9,8 +9,7 @@
     -- the way back. The seccond parameter will tell the turtle to  --
     -- drop that many blocks after moving forward once.             --
     --                                                              --
-    -- if the turtle is a mining turtle it will break any blocks    --
-    -- blocking it's path                                           --
+    -- if the turtle is a mining turtle it will break any blocks    --                                                 --
     ------------------------------------------------------------------
      
     local tArgs = { ... }
