@@ -11,10 +11,10 @@ local tArgs = { ... }
 -- Arg1 = Rotate?
 local startDir = tArgs[1]
 
-if startDir = "r" then
+if startDir == 1 then
     turtle.turnRight()
     print("Clockwise!")
-elseif startDir = "l" then turtle.turnLeft()
+elseif startDir == 3 then
     turtle.turnLeft()
     print("Counter-clockwise!")
 end
