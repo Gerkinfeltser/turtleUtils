@@ -27,6 +27,7 @@ function os.getComputerType()
   local x,y = term.getSize()
   local ret
 
+  term.clear()
 --  if term.isColor() then
 --    table.insert(ret, "advanced")
 --  end

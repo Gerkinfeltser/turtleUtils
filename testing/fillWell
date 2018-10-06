@@ -45,6 +45,7 @@ else
 end
 
 while not turtle.detect() do
+    local doPlace = true
     if turtle.getItemCount(slotNum) < 1 then
         print("Give me some-more or press [x] to quit, yo")
         -- limit os.pullEvent to the 'key' event
@@ -52,14 +53,14 @@ while not turtle.detect() do
         -- if the key pressed was 'x'
         if key == keys.x then
             print( "You pressed [x]. Aborting dump..." )
-            break
+            doPlace = false
         end
     end
-    if turtle.place() then
+    if turtle.place() and doPlace then
         filledCount = filledCount + 1
+        sleep(0.1)
+        turtle.detect()
     end
-    sleep(0.1)
-    turtle.detect()
 end
 
 if filledCount > 1 then
