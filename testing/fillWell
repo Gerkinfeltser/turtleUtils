@@ -17,10 +17,17 @@ elseif startDir == "ccw" then
 end
 
 -- Move to desired height
-print("Moving on up...")
-if startHeight > 0 then
-    for i = 1, startHeight do
-        turtle.moveUp()
+if startHeight ~= 0 then
+    if startHeight > 0 then
+        print("Moving on up...")
+        for i = 1, math.abs(startHeight) do
+            turtle.moveUp()
+        end
+    else then
+        print("Moving on down...")
+        for i = 1, math.abs(startHeight) do
+            turtle.moveDown()
+        end
     end
 end
 
