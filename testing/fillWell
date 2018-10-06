@@ -1,30 +1,54 @@
 -- Fills space in front until detected as filled
 -- Works best with gravity obeying blocks
-local filledCount = 0
 local tArgs = { ... }
 
--- if #tArgs ~= 1 then
---     print( "Usage: do <list of commands>" )
--- 	return
--- end
+local startDir = tArgs[1] or 0
+local slotNum = tArgs[2] or 1
+local startHeight = tArgs[3] or 0
 
--- Arg1 = Rotate?
-local startDir = tArgs[1]
-
-if startDir == 1 then
+-- Rotate into specified orientation
+print("Getting situated...")
+if startDir == "cw" then
     turtle.turnRight()
     print("Clockwise!")
-elseif startDir == 3 then
+elseif startDir == "ccw" then
     turtle.turnLeft()
     print("Counter-clockwise!")
 end
 
+-- Move to desired height
+print("Moving on up...")
+if startHeight > 0 then
+    for i = 1, startHeight do
+        turtle.moveUp()
+    end
+end
+
+-- Start dropping
+local filledCount = 0
+print("Stand back!")
+
+turtle.select(slotNum)
 while not turtle.detect() do
-    turtle.place()
-    print("blah...")
-    filledCount = filledCount + 1
+    if turtle.getItemCount(slotNum) < 1 then
+        print("Give me some-more or press [x] to quit, yo")
+        -- limit os.pullEvent to the 'key' event
+        local event, key = os.pullEvent( "key" ) 
+        -- if the key pressed was 'x'
+        if key == keys.x then
+            print( "You pressed [x]. Aborting dump..." )
+            break
+        end
+    end
+    if turtle.place() then
+        filledCount = filledCount + 1
+    end
     sleep(0.1)
     turtle.detect()
 end
 
-print(filledCount, " dropped")
+if filledCount > 1 then
+    print(filledCount, " dropped")
+else
+    print("I dropped no-thing!!!")
+end
