@@ -3,8 +3,8 @@
 local tArgs = { ... }
 
 local startDir = tArgs[1] or 0
-local slotNum = tArgs[2] or 1
-local startHeight = tArgs[3] or 0
+local slotNum = tonumber(tArgs[2])
+local startHeight = tonumber(tArgs[3]) or 0
 
 -- Rotate into specified orientation
 print("Getting situated...")
@@ -23,7 +23,7 @@ if startHeight ~= 0 then
         for i = 1, math.abs(startHeight) do
             turtle.moveUp()
         end
-    else then
+    else
         print("Moving on down...")
         for i = 1, math.abs(startHeight) do
             turtle.moveDown()
@@ -35,7 +35,12 @@ end
 local filledCount = 0
 print("Stand back!")
 
-turtle.select(slotNum)
+if not IsNull(slotNum) then
+    turtle.select(slotNum)
+else
+    slotNum = turtle.getSelectedSlot()
+end
+
 while not turtle.detect() do
     if turtle.getItemCount(slotNum) < 1 then
         print("Give me some-more or press [x] to quit, yo")
