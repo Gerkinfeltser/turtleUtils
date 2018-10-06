@@ -1,11 +1,30 @@
 -- Fills space in front until detected as filled
 -- Works best with gravity obeying blocks
-
 local filledCount = 0
+local tArgs = { ... }
 
-while !turtle.detect() do
+-- if #tArgs ~= 1 then
+--     print( "Usage: do <list of commands>" )
+-- 	return
+-- end
+
+-- Arg1 = Rotate?
+local startDir = tArgs[1]
+
+if startDir = "r" then
+    turtle.turnRight()
+    print("Clockwise!")
+elseif startDir = "l" then turtle.turnLeft()
+    turtle.turnLeft()
+    print("Counter-clockwise!")
+end
+
+while not turtle.detect() do
     turtle.place()
+    print("blah...")
     filledCount = filledCount + 1
     sleep(0.1)
     turtle.detect()
 end
+
+print(filledCount, " dropped")
