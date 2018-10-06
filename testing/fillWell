@@ -1,0 +1,11 @@
+-- Fills space in front until detected as filled
+-- Works best with gravity obeying blocks
+
+local filledCount = 0
+
+while !turtle.detect() do
+    turtle.place()
+    filledCount = filledCount + 1
+    sleep(0.1)
+    turtle.detect()
+end
